@@ -1,4 +1,4 @@
-// Deterministic mock data for NRADTP. All records are synthetic.
+// Deterministic mock data for NRAMS. All records are synthetic.
 
 function rng(seed: number) {
   let s = seed >>> 0
@@ -14,40 +14,62 @@ const pad = (n: number, w: number) => String(n).padStart(w, '0')
 const dateIn = (y: number, m1: number, m2: number) => `${y}-${pad(int(m1, m2), 2)}-${pad(int(1, 28), 2)}`
 
 // ---------- Geography ----------
+// All 8 divisions and 64 districts. lon/lat is an interior point of the real boundary polygon and r is the
+// radius (in degrees) of the largest circle around it that stays inside the district — both derived from the
+// BBS / OCHA administrative boundaries (geoBoundaries gbOpen BGD ADM2), the same data drawn in bd-geo.json.
 export type Division = { id: string; bn: string; en: string; lon: number; lat: number; districts: District[] }
-export type District = { bn: string; en: string; lon: number; lat: number }
+export type District = { bn: string; en: string; lon: number; lat: number; r: number }
 
 export const divisions: Division[] = [
-  { id: 'DHA', bn: 'ঢাকা', en: 'Dhaka', lon: 90.4, lat: 23.8, districts: [
-    { bn: 'ঢাকা', en: 'Dhaka', lon: 90.41, lat: 23.78 }, { bn: 'গাজীপুর', en: 'Gazipur', lon: 90.42, lat: 24.0 }, { bn: 'নারায়ণগঞ্জ', en: 'Narayanganj', lon: 90.5, lat: 23.62 },
-    { bn: 'টাঙ্গাইল', en: 'Tangail', lon: 89.92, lat: 24.25 }, { bn: 'ফরিদপুর', en: 'Faridpur', lon: 89.84, lat: 23.6 }, { bn: 'কিশোরগঞ্জ', en: 'Kishoreganj', lon: 90.78, lat: 24.43 }, { bn: 'মানিকগঞ্জ', en: 'Manikganj', lon: 90.0, lat: 23.86 } ] },
-  { id: 'CTG', bn: 'চট্টগ্রাম', en: 'Chattogram', lon: 91.8, lat: 22.35, districts: [
-    { bn: 'চট্টগ্রাম', en: 'Chattogram', lon: 91.83, lat: 22.34 }, { bn: 'কক্সবাজার', en: "Cox's Bazar", lon: 92.0, lat: 21.43 }, { bn: 'কুমিল্লা', en: 'Cumilla', lon: 91.18, lat: 23.46 },
-    { bn: 'নোয়াখালী', en: 'Noakhali', lon: 91.1, lat: 22.82 }, { bn: 'ব্রাহ্মণবাড়িয়া', en: 'Brahmanbaria', lon: 91.11, lat: 23.96 }, { bn: 'রাঙ্গামাটি', en: 'Rangamati', lon: 92.2, lat: 22.65 }, { bn: 'বান্দরবান', en: 'Bandarban', lon: 92.22, lat: 22.2 } ] },
-  { id: 'RAJ', bn: 'রাজশাহী', en: 'Rajshahi', lon: 88.6, lat: 24.37, districts: [
-    { bn: 'রাজশাহী', en: 'Rajshahi', lon: 88.6, lat: 24.37 }, { bn: 'বগুড়া', en: 'Bogura', lon: 89.37, lat: 24.85 }, { bn: 'পাবনা', en: 'Pabna', lon: 89.24, lat: 24.0 },
-    { bn: 'নাটোর', en: 'Natore', lon: 88.94, lat: 24.42 }, { bn: 'সিরাজগঞ্জ', en: 'Sirajganj', lon: 89.7, lat: 24.45 } ] },
-  { id: 'KHU', bn: 'খুলনা', en: 'Khulna', lon: 89.55, lat: 22.8, districts: [
-    { bn: 'খুলনা', en: 'Khulna', lon: 89.56, lat: 22.82 }, { bn: 'যশোর', en: 'Jashore', lon: 89.21, lat: 23.17 }, { bn: 'কুষ্টিয়া', en: 'Kushtia', lon: 89.12, lat: 23.9 },
-    { bn: 'সাতক্ষীরা', en: 'Satkhira', lon: 89.07, lat: 22.72 }, { bn: 'বাগেরহাট', en: 'Bagerhat', lon: 89.79, lat: 22.65 } ] },
-  { id: 'BAR', bn: 'বরিশাল', en: 'Barishal', lon: 90.37, lat: 22.7, districts: [
-    { bn: 'বরিশাল', en: 'Barishal', lon: 90.37, lat: 22.7 }, { bn: 'পটুয়াখালী', en: 'Patuakhali', lon: 90.33, lat: 22.36 }, { bn: 'ভোলা', en: 'Bhola', lon: 90.65, lat: 22.68 }, { bn: 'পিরোজপুর', en: 'Pirojpur', lon: 89.97, lat: 22.58 } ] },
-  { id: 'SYL', bn: 'সিলেট', en: 'Sylhet', lon: 91.87, lat: 24.9, districts: [
-    { bn: 'সিলেট', en: 'Sylhet', lon: 91.87, lat: 24.9 }, { bn: 'মৌলভীবাজার', en: 'Moulvibazar', lon: 91.78, lat: 24.48 }, { bn: 'হবিগঞ্জ', en: 'Habiganj', lon: 91.41, lat: 24.38 }, { bn: 'সুনামগঞ্জ', en: 'Sunamganj', lon: 91.4, lat: 25.07 } ] },
-  { id: 'RNG', bn: 'রংপুর', en: 'Rangpur', lon: 89.25, lat: 25.75, districts: [
-    { bn: 'রংপুর', en: 'Rangpur', lon: 89.25, lat: 25.75 }, { bn: 'দিনাজপুর', en: 'Dinajpur', lon: 88.64, lat: 25.63 }, { bn: 'কুড়িগ্রাম', en: 'Kurigram', lon: 89.65, lat: 25.8 },
-    { bn: 'ঠাকুরগাঁও', en: 'Thakurgaon', lon: 88.46, lat: 26.03 }, { bn: 'পঞ্চগড়', en: 'Panchagarh', lon: 88.56, lat: 26.34 } ] },
-  { id: 'MYM', bn: 'ময়মনসিংহ', en: 'Mymensingh', lon: 90.4, lat: 24.75, districts: [
-    { bn: 'ময়মনসিংহ', en: 'Mymensingh', lon: 90.4, lat: 24.75 }, { bn: 'নেত্রকোণা', en: 'Netrokona', lon: 90.73, lat: 24.88 }, { bn: 'জামালপুর', en: 'Jamalpur', lon: 89.94, lat: 24.92 }, { bn: 'শেরপুর', en: 'Sherpur', lon: 90.02, lat: 25.02 } ] },
+  { id: 'DHA', bn: 'ঢাকা', en: 'Dhaka', lon: 90.083, lat: 23.533, districts: [
+    { bn: 'ঢাকা', en: 'Dhaka', lon: 90.357, lat: 23.77, r: 0.106 }, { bn: 'গাজীপুর', en: 'Gazipur', lon: 90.441, lat: 24.106, r: 0.181 }, { bn: 'নারায়ণগঞ্জ', en: 'Narayanganj', lon: 90.592, lat: 23.741, r: 0.079 },
+    { bn: 'টাঙ্গাইল', en: 'Tangail', lon: 89.998, lat: 24.377, r: 0.212 }, { bn: 'ফরিদপুর', en: 'Faridpur', lon: 89.893, lat: 23.504, r: 0.155 }, { bn: 'কিশোরগঞ্জ', en: 'Kishoreganj', lon: 90.968, lat: 24.401, r: 0.192 },
+    { bn: 'মানিকগঞ্জ', en: 'Manikganj', lon: 89.939, lat: 23.847, r: 0.135 }, { bn: 'মুন্সীগঞ্জ', en: 'Munshiganj', lon: 90.312, lat: 23.547, r: 0.095 }, { bn: 'নরসিংদী', en: 'Narsingdi', lon: 90.795, lat: 23.993, r: 0.128 },
+    { bn: 'গোপালগঞ্জ', en: 'Gopalganj', lon: 89.932, lat: 23, r: 0.115 }, { bn: 'মাদারীপুর', en: 'Madaripur', lon: 90.131, lat: 23.215, r: 0.1 }, { bn: 'রাজবাড়ী', en: 'Rajbari', lon: 89.601, lat: 23.705, r: 0.107 },
+    { bn: 'শরীয়তপুর', en: 'Shariatpur', lon: 90.371, lat: 23.285, r: 0.121 },
+  ] },
+  { id: 'CTG', bn: 'চট্টগ্রাম', en: 'Chattogram', lon: 92.027, lat: 22.74, districts: [
+    { bn: 'চট্টগ্রাম', en: 'Chattogram', lon: 91.987, lat: 22.228, r: 0.138 }, { bn: 'কক্সবাজার', en: "Cox's Bazar", lon: 91.996, lat: 21.746, r: 0.101 }, { bn: 'কুমিল্লা', en: 'Cumilla', lon: 90.975, lat: 23.588, r: 0.162 },
+    { bn: 'নোয়াখালী', en: 'Noakhali', lon: 91.126, lat: 22.81, r: 0.144 }, { bn: 'ব্রাহ্মণবাড়িয়া', en: 'Brahmanbaria', lon: 91.092, lat: 23.909, r: 0.125 }, { bn: 'রাঙ্গামাটি', en: 'Rangamati', lon: 92.237, lat: 22.763, r: 0.21 },
+    { bn: 'বান্দরবান', en: 'Bandarban', lon: 92.389, lat: 21.676, r: 0.196 }, { bn: 'চাঁদপুর', en: 'Chandpur', lon: 90.805, lat: 23.29, r: 0.129 }, { bn: 'ফেনী', en: 'Feni', lon: 91.41, lat: 22.97, r: 0.087 },
+    { bn: 'লক্ষ্মীপুর', en: 'Lakshmipur', lon: 90.856, lat: 22.92, r: 0.1 }, { bn: 'খাগড়াছড়ি', en: 'Khagrachhari', lon: 91.961, lat: 23.235, r: 0.154 },
+  ] },
+  { id: 'RAJ', bn: 'রাজশাহী', en: 'Rajshahi', lon: 89.163, lat: 24.598, districts: [
+    { bn: 'রাজশাহী', en: 'Rajshahi', lon: 88.719, lat: 24.475, r: 0.16 }, { bn: 'বগুড়া', en: 'Bogura', lon: 89.39, lat: 24.844, r: 0.216 }, { bn: 'পাবনা', en: 'Pabna', lon: 89.371, lat: 24.074, r: 0.159 },
+    { bn: 'নাটোর', en: 'Natore', lon: 89.08, lat: 24.36, r: 0.17 }, { bn: 'সিরাজগঞ্জ', en: 'Sirajganj', lon: 89.578, lat: 24.387, r: 0.161 }, { bn: 'জয়পুরহাট', en: 'Joypurhat', lon: 89.087, lat: 25.134, r: 0.108 },
+    { bn: 'নওগাঁ', en: 'Naogaon', lon: 88.74, lat: 24.912, r: 0.225 }, { bn: 'চাঁপাইনবাবগঞ্জ', en: 'Chapai Nawabganj', lon: 88.264, lat: 24.725, r: 0.151 },
+  ] },
+  { id: 'KHU', bn: 'খুলনা', en: 'Khulna', lon: 89.396, lat: 22.804, districts: [
+    { bn: 'খুলনা', en: 'Khulna', lon: 89.402, lat: 22.552, r: 0.132 }, { bn: 'যশোর', en: 'Jashore', lon: 89.185, lat: 23.1, r: 0.18 }, { bn: 'কুষ্টিয়া', en: 'Kushtia', lon: 88.933, lat: 24.007, r: 0.105 },
+    { bn: 'সাতক্ষীরা', en: 'Satkhira', lon: 89.097, lat: 22.645, r: 0.134 }, { bn: 'বাগেরহাট', en: 'Bagerhat', lon: 89.739, lat: 22.586, r: 0.158 }, { bn: 'চুয়াডাঙ্গা', en: 'Chuadanga', lon: 88.884, lat: 23.649, r: 0.113 },
+    { bn: 'ঝিনাইদহ', en: 'Jhenaidah', lon: 89.147, lat: 23.544, r: 0.144 }, { bn: 'মাগুরা', en: 'Magura', lon: 89.408, lat: 23.399, r: 0.111 }, { bn: 'মেহেরপুর', en: 'Meherpur', lon: 88.686, lat: 23.767, r: 0.091 },
+    { bn: 'নড়াইল', en: 'Narail', lon: 89.554, lat: 23.151, r: 0.112 },
+  ] },
+  { id: 'BAR', bn: 'বরিশাল', en: 'Barishal', lon: 90.245, lat: 22.418, districts: [
+    { bn: 'বরিশাল', en: 'Barishal', lon: 90.326, lat: 22.857, r: 0.122 }, { bn: 'পটুয়াখালী', en: 'Patuakhali', lon: 90.457, lat: 22.331, r: 0.132 }, { bn: 'ভোলা', en: 'Bhola', lon: 90.724, lat: 22.162, r: 0.085 },
+    { bn: 'পিরোজপুর', en: 'Pirojpur', lon: 90.027, lat: 22.71, r: 0.088 }, { bn: 'বরগুনা', en: 'Barguna', lon: 90.136, lat: 22.185, r: 0.064 }, { bn: 'ঝালকাঠি', en: 'Jhalokati', lon: 90.208, lat: 22.611, r: 0.09 },
+  ] },
+  { id: 'SYL', bn: 'সিলেট', en: 'Sylhet', lon: 91.693, lat: 24.712, districts: [
+    { bn: 'সিলেট', en: 'Sylhet', lon: 91.953, lat: 24.954, r: 0.221 }, { bn: 'মৌলভীবাজার', en: 'Moulvibazar', lon: 91.792, lat: 24.445, r: 0.159 }, { bn: 'হবিগঞ্জ', en: 'Habiganj', lon: 91.423, lat: 24.474, r: 0.171 },
+    { bn: 'সুনামগঞ্জ', en: 'Sunamganj', lon: 91.4, lat: 24.916, r: 0.227 },
+  ] },
+  { id: 'RNG', bn: 'রংপুর', en: 'Rangpur', lon: 89.376, lat: 25.6, districts: [
+    { bn: 'রংপুর', en: 'Rangpur', lon: 89.251, lat: 25.674, r: 0.174 }, { bn: 'দিনাজপুর', en: 'Dinajpur', lon: 88.655, lat: 25.709, r: 0.189 }, { bn: 'কুড়িগ্রাম', en: 'Kurigram', lon: 89.667, lat: 25.738, r: 0.146 },
+    { bn: 'ঠাকুরগাঁও', en: 'Thakurgaon', lon: 88.354, lat: 26.019, r: 0.16 }, { bn: 'পঞ্চগড়', en: 'Panchagarh', lon: 88.57, lat: 26.276, r: 0.089 }, { bn: 'গাইবান্ধা', en: 'Gaibandha', lon: 89.534, lat: 25.311, r: 0.172 },
+    { bn: 'লালমনিরহাট', en: 'Lalmonirhat', lon: 89.394, lat: 25.922, r: 0.09 }, { bn: 'নীলফামারী', en: 'Nilphamari', lon: 88.934, lat: 26.012, r: 0.151 },
+  ] },
+  { id: 'MYM', bn: 'ময়মনসিংহ', en: 'Mymensingh', lon: 90.57, lat: 24.832, districts: [
+    { bn: 'ময়মনসিংহ', en: 'Mymensingh', lon: 90.392, lat: 24.659, r: 0.224 }, { bn: 'নেত্রকোণা', en: 'Netrokona', lon: 90.765, lat: 24.953, r: 0.164 }, { bn: 'জামালপুর', en: 'Jamalpur', lon: 89.864, lat: 24.848, r: 0.113 },
+    { bn: 'শেরপুর', en: 'Sherpur', lon: 90.077, lat: 25.081, r: 0.147 },
+  ] },
 ]
+export const districtCount = divisions.reduce((n, d) => n + d.districts.length, 0)
 
-// Approximate Bangladesh outline (lon, lat) for the stylised GIS map
-export const bdOutline: [number, number][] = [
-  [88.4, 26.6], [88.9, 26.45], [89.3, 26.2], [89.8, 26.05], [89.85, 25.6], [89.75, 25.3], [90.2, 25.2], [90.7, 25.15], [91.3, 25.2], [91.9, 25.2], [92.4, 25.1],
-  [92.45, 24.5], [92.2, 24.15], [91.6, 24.1], [91.45, 23.8], [91.25, 23.3], [91.6, 22.95], [92.0, 23.6], [92.3, 23.2], [92.7, 22.1], [92.6, 21.3], [92.3, 20.75],
-  [92.05, 21.2], [91.9, 21.9], [91.75, 22.3], [91.4, 22.6], [91.0, 22.4], [90.7, 22.0], [90.3, 21.9], [89.9, 21.8], [89.5, 21.65], [89.0, 21.7], [88.9, 22.2],
-  [88.65, 22.9], [88.85, 23.5], [88.55, 24.15], [88.25, 24.45], [88.05, 24.75], [88.15, 25.15], [88.35, 25.6], [88.1, 26.05], [88.4, 26.6],
-]
+// Random point guaranteed to fall inside the district (uniform over 80% of its inscribed circle)
+const scatter = (d: District) => {
+  const a = R() * 2 * Math.PI, k = Math.sqrt(R()) * 0.8 * d.r
+  return { lat: d.lat + Math.sin(a) * k, lon: d.lon + (Math.cos(a) * k) / 0.916 }
+}
 
 // ---------- Institutions ----------
 export type InstType = 'mosque' | 'madrasa' | 'temple' | 'church' | 'buddhist' | 'other'
@@ -100,7 +122,7 @@ export const institutions: Institution[] = (() => {
       divisionId: div.id, district: dist, upazila: pick(upazilas), union: pick(unions),
       established: int(1890, 2020), committeeHead: pick(firstNames), incharge: pick(firstNames),
       mobile: `01${int(3, 9)}${pad(int(0, 99999999), 8)}`, landDecimal: int(5, 480), building: pick(['পাকা', 'আধা-পাকা', 'বহুতল', 'টিনশেড']),
-      capacity: int(80, 5000), lat: dist.lat + (R() - 0.5) * 0.35, lon: dist.lon + (R() - 0.5) * 0.35,
+      capacity: int(80, 5000), ...scatter(dist),
       status, grantsReceived: int(0, 6), lastInspection: R() < 0.7 ? dateIn(2026, 1, 9) : null, registeredOn: dateIn(2025, 7, 12),
     })
   }
@@ -195,7 +217,7 @@ export const waqfProperties: WaqfProperty[] = Array.from({ length: 52 }, (_, i) 
   const div = pick(divisions), dist = pick(div.districts)
   const kind = pick(waqfKinds)
   const names: Record<string, [string, string]> = { Land: ['ওয়াক্‌ফ এস্টেট জমি', 'Waqf Estate Land'], 'Commercial Building': ['ওয়াক্‌ফ বাণিজ্যিক ভবন', 'Waqf Commercial Building'], Residential: ['ওয়াক্‌ফ আবাসিক ভবন', 'Waqf Residential Block'], 'Shop Complex': ['ওয়াক্‌ফ মার্কেট', 'Waqf Market Complex'], Agricultural: ['ওয়াক্‌ফ কৃষি জমি', 'Waqf Agricultural Land'], Pond: ['ওয়াক্‌ফ পুকুর', 'Waqf Pond'] }
-  return { id: `WQF-${div.id}-${pad(i + 1, 5)}`, nameBn: `${names[kind][0]}, ${dist.bn}`, nameEn: `${names[kind][1]}, ${dist.en}`, district: dist, divisionId: div.id, kind, landDecimal: int(8, 900), deedNo: `${int(1000, 9999)}/${int(1950, 2015)}`, waqifName: pick(['হাজী মোহাম্মদ মহসিন', 'নবাব সলিমুল্লাহ', 'হাজী আব্দুল গণি', 'বেগম রোকেয়া ওয়াক্‌ফ', 'মুন্সী আব্দুল লতিফ', 'খান বাহাদুর আহছানউল্লা']), currentUse: pick(['মসজিদ ও মার্কেট', 'দোকান ভাড়া', 'কৃষি চাষ', 'আবাসিক ভাড়া', 'খালি/অব্যবহৃত', 'মাদ্রাসা', 'মাছ চাষ']), legalStatus: pick(['Clear', 'Clear', 'Clear', 'Clear', 'Disputed', 'Under Litigation', 'Encroached']), lat: dist.lat + (R() - 0.5) * 0.3, lon: dist.lon + (R() - 0.5) * 0.3, estValue: int(20, 900) * 100000, leased: R() < 0.65 }
+  return { id: `WQF-${div.id}-${pad(i + 1, 5)}`, nameBn: `${names[kind][0]}, ${dist.bn}`, nameEn: `${names[kind][1]}, ${dist.en}`, district: dist, divisionId: div.id, kind, landDecimal: int(8, 900), deedNo: `${int(1000, 9999)}/${int(1950, 2015)}`, waqifName: pick(['হাজী মোহাম্মদ মহসিন', 'নবাব সলিমুল্লাহ', 'হাজী আব্দুল গণি', 'বেগম রোকেয়া ওয়াক্‌ফ', 'মুন্সী আব্দুল লতিফ', 'খান বাহাদুর আহছানউল্লা']), currentUse: pick(['মসজিদ ও মার্কেট', 'দোকান ভাড়া', 'কৃষি চাষ', 'আবাসিক ভাড়া', 'খালি/অব্যবহৃত', 'মাদ্রাসা', 'মাছ চাষ']), legalStatus: pick(['Clear', 'Clear', 'Clear', 'Clear', 'Disputed', 'Under Litigation', 'Encroached']), ...scatter(dist), estValue: int(20, 900) * 100000, leased: R() < 0.65 }
 })
 export type Lease = { id: string; property: WaqfProperty; tenant: string; agreementNo: string; start: string; end: string; monthlyRent: number; paidMonths: number; dueMonths: number; status: 'Active' | 'Expiring' | 'Expired' | 'Arrear' }
 export const leases: Lease[] = waqfProperties.filter((p) => p.leased).map((p, i) => {

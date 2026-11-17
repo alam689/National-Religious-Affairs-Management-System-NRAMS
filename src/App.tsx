@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Shell from './components/Shell'
 import Login from './pages/Login'
@@ -6,7 +7,8 @@ import Institutions from './pages/Institutions'
 import InstitutionProfile from './pages/InstitutionProfile'
 import Grants from './pages/Grants'
 import Inspections from './pages/Inspections'
-import GisMap from './pages/GisMap'
+// The map page pulls in Leaflet, so it is loaded on demand
+const GisMap = lazy(() => import('./pages/GisMap'))
 import Hajj from './pages/Hajj'
 import HajjOperations from './pages/HajjOperations'
 import HajjTraining from './pages/HajjTraining'
@@ -36,7 +38,7 @@ export default function App() {
       <Route path="/institutions/:id" element={<Office><InstitutionProfile /></Office>} />
       <Route path="/grants" element={<Office><Grants /></Office>} />
       <Route path="/inspections" element={<Office><Inspections /></Office>} />
-      <Route path="/gis" element={<Office><GisMap /></Office>} />
+      <Route path="/gis" element={<Office><Suspense fallback={<div className="p-10 text-center text-sm text-slate-400">Loading map…</div>}><GisMap /></Suspense></Office>} />
       <Route path="/hajj" element={<Office><Hajj /></Office>} />
       <Route path="/hajj/operations" element={<Office><HajjOperations /></Office>} />
       <Route path="/hajj/training" element={<Office><HajjTraining /></Office>} />

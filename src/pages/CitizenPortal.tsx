@@ -26,7 +26,7 @@ export default function CitizenPortal() {
     <div className="min-h-full bg-[#f4f6f9] flex flex-col">
       <header className="sticky top-0 z-30 bg-[#0a1530] text-white">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center gap-4">
-          <div className="flex items-center gap-3"><div className="w-9 h-9 rounded-lg bg-gradient-to-br from-brand-400 to-brand-700 grid place-items-center"><Database size={18} /></div><div className="leading-tight"><div className="font-bold tracking-tight">NRA<span className="text-brand-300">DTP</span> <span className="text-slate-400 font-normal text-sm bn">{t('citizenPortal')}</span></div><div className="text-[10.5px] text-slate-400 bn">{t('ministry')}</div></div></div>
+          <div className="flex items-center gap-3"><div className="w-9 h-9 rounded-lg bg-gradient-to-br from-brand-400 to-brand-700 grid place-items-center"><Database size={18} /></div><div className="leading-tight"><div className="font-bold tracking-tight">NRA<span className="text-brand-300">MS</span> <span className="text-slate-400 font-normal text-sm bn">{t('citizenPortal')}</span></div><div className="text-[10.5px] text-slate-400 bn">{t('ministry')}</div></div></div>
           <div className="hidden md:flex flex-1 max-w-xl mx-auto items-center gap-2 bg-white/10 border border-white/15 rounded-lg px-3 py-2 focus-within:bg-white focus-within:text-slate-800 transition"><Search size={15} /><input className="bg-transparent outline-none text-sm w-full placeholder:text-slate-400 bn" placeholder={L('সেবা, প্রতিষ্ঠান বা আবেদন নং খুঁজুন', 'Search a service, institution or application no.')} /></div>
           <div className="ml-auto flex items-center gap-3"><LangToggle dark /><Link to="/login" className="text-xs font-semibold text-brand-300 hover:text-white bn">{t('officerLogin')} →</Link></div>
         </div>
@@ -65,7 +65,7 @@ export default function CitizenPortal() {
           <div className="card p-5"><h3 className="font-semibold text-slate-900 mb-3 bn">{L('সহায়তা', 'Help')}</h3><div className="space-y-3 text-sm">{[[Phone, L('হজ হেল্পলাইন', 'Hajj helpline'), '16136'], [Phone, L('সাধারণ সেবা', 'General services'), '333'], [Headset, L('অনলাইন অভিযোগ (GRS)', 'Online complaint (GRS)'), 'grs.gov.bd']].map(([I, k, v], i) => { const Icon = I as typeof Phone; return <div key={i} className="flex items-center gap-3"><span className="w-9 h-9 rounded-lg bg-brand-50 text-brand-600 grid place-items-center"><Icon size={16} /></span><div><div className="text-xs text-slate-500 bn">{k as string}</div><div className="font-semibold tabular-nums">{v as string}</div></div></div> })}</div></div>
         </section>
       </main>
-      <footer className="bg-white border-t border-slate-200 py-4 text-center text-[11px] text-slate-400 bn">{t('govt')} · {t('ministry')} · © 2026 NRADTP</footer>
+      <footer className="bg-white border-t border-slate-200 py-4 text-center text-[11px] text-slate-400 bn">{t('govt')} · {t('ministry')} · © 2026 NRAMS</footer>
     </div>
   )
 }

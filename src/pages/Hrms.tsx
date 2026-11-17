@@ -51,7 +51,7 @@ export default function Hrms() {
           <div className="kicker mb-2 flex items-center gap-1.5"><Smartphone size={12} /> {L('মাঠ কর্মকর্তা মোবাইল উপস্থিতি', 'Field officer mobile attendance')}</div>
           <div className="mx-auto w-[280px] rounded-[36px] bg-[#0a1530] p-2.5 shadow-pop">
             <div className="rounded-[28px] bg-cream overflow-hidden h-[480px] flex flex-col">
-              <div className="bg-[#0a1530] text-white px-5 pt-4 pb-4"><div className="text-xs text-brand-300 font-semibold">NRADTP Field</div><div className="font-bold bn">{L('উপস্থিতি', 'Attendance')}</div><div className="text-[11px] text-slate-400">{fmtDate('2026-09-22', lang)} · 08:52</div></div>
+              <div className="bg-[#0a1530] text-white px-5 pt-4 pb-4"><div className="text-xs text-brand-300 font-semibold">NRAMS Field</div><div className="font-bold bn">{L('উপস্থিতি', 'Attendance')}</div><div className="text-[11px] text-slate-400">{fmtDate('2026-09-22', lang)} · 08:52</div></div>
               <div className="flex-1 p-3 space-y-2 text-sm">
                 <div className="card p-3"><div className="flex items-center gap-2 text-xs font-semibold"><MapPin size={13} className="text-emerald-600" /> GPS</div><div className="font-mono text-xs mt-1">24.3745, 88.6042</div><div className="text-[11px] text-slate-500 bn">{L('জেলা কার্যালয়, রাজশাহী থেকে ১৮ মি', '18 m from District Office, Rajshahi')}</div></div>
                 <div className="card p-3"><div className="flex items-center gap-2 text-xs font-semibold"><Smartphone size={13} className="text-brand-600" /> {L('ডিভাইস', 'Device')}</div><div className="text-[11px] text-slate-500 mt-1">Samsung A54 · {L('নিবন্ধিত', 'Registered')} · IMEI •••4471</div></div>

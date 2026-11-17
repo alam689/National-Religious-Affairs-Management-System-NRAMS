@@ -10,7 +10,7 @@ const phases = [
 
 export default function Roadmap() {
   const { L } = useLang()
-  const names = [['National Religious Affairs Digital Transformation Platform', 'NRADTP', true], ['Integrated Religious Affairs Management System', 'IRAMS', false], ['National Religious Affairs Digital Management Platform', 'NRADMP', false], ['Digital Religious Affairs Service Platform', 'DRASP', false], ['Integrated Religious Institutions & Services Platform', 'IRISP', false], ['Bangladesh Religious Affairs Digital Platform', 'BRADP', false], ['e-Religious Affairs Bangladesh', 'e-RAB', false], ['National Religious Institutions & Services Management System', 'NRISMS', false]] as const
+  const names = [['National Religious Affairs Management System', 'NRAMS', true], ['National Religious Affairs Digital Transformation Platform', 'NRADTP', false], ['Integrated Religious Affairs Management System', 'IRAMS', false], ['National Religious Affairs Digital Management Platform', 'NRADMP', false], ['Digital Religious Affairs Service Platform', 'DRASP', false], ['Integrated Religious Institutions & Services Platform', 'IRISP', false], ['Bangladesh Religious Affairs Digital Platform', 'BRADP', false], ['e-Religious Affairs Bangladesh', 'e-RAB', false], ['National Religious Institutions & Services Management System', 'NRISMS', false]] as const
   return (
     <div>
       <PageHeader kicker={L('প্রকল্প · ধাপভিত্তিক বাস্তবায়ন ও স্থাপত্য', 'PROJECT · PHASED IMPLEMENTATION & ARCHITECTURE')} title={L('বাস্তবায়ন রোডম্যাপ', 'Implementation Roadmap')}
@@ -47,7 +47,7 @@ export default function Roadmap() {
         </Card>
         <div className="space-y-4">
           <Card>
-            <CardHeader title={L('প্রকল্পের সম্ভাব্য নাম', 'Candidate project names')} subtitle={L('আনুষ্ঠানিক প্রস্তাব: NRADTP — ভবিষ্যতে সকল মডিউল একই umbrella-র অধীনে রাখার জন্য সবচেয়ে flexible', 'Formal recommendation: NRADTP — most flexible for keeping every future module under one umbrella')} />
+            <CardHeader title={L('প্রকল্পের সম্ভাব্য নাম', 'Candidate project names')} subtitle={L('নির্বাচিত নাম: NRAMS — ভবিষ্যতে সকল মডিউল একই umbrella-র অধীনে রাখার জন্য সবচেয়ে flexible', 'Selected name: NRAMS — keeps every future module under one umbrella')} />
             <ul className="space-y-1.5">{names.map(([full, short, rec], i) => <li key={short} className={`flex items-center gap-3 text-sm rounded-lg px-3 py-2 ${rec ? 'bg-brand-50 border border-brand-200' : ''}`}><span className="text-xs text-slate-400 tabular-nums w-4">{i + 1}</span><span className="flex-1 text-slate-700">{full}</span><span className={`font-mono text-xs font-bold ${rec ? 'text-brand-700' : 'text-slate-500'}`}>{short}</span>{rec && <Badge tone="brand">{L('প্রস্তাবিত', 'Recommended')}</Badge>}</li>)}</ul>
           </Card>
           <Card>

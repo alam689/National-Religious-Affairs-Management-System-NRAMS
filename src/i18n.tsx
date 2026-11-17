@@ -4,8 +4,8 @@ export type Lang = 'bn' | 'en'
 
 const dict = {
   // shell
-  appName: ['NRADTP', 'NRADTP'],
-  appFull: ['জাতীয় ধর্ম বিষয়ক ডিজিটাল রূপান্তর প্ল্যাটফর্ম', 'National Religious Affairs Digital Transformation Platform'],
+  appName: ['NRAMS', 'NRAMS'],
+  appFull: ['জাতীয় ধর্ম বিষয়ক ব্যবস্থাপনা সিস্টেম', 'National Religious Affairs Management System'],
   ministry: ['ধর্ম বিষয়ক মন্ত্রণালয়', 'Ministry of Religious Affairs'],
   govt: ['গণপ্রজাতন্ত্রী বাংলাদেশ সরকার', "Government of the People's Republic of Bangladesh"],
   search: ['খুঁজুন…', 'Search…'],
@@ -118,10 +118,10 @@ const LangCtx = createContext<{ lang: Lang; setLang: (l: Lang) => void; t: (k: T
 })
 
 export function LangProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Lang>(() => (localStorage.getItem('nradtp.lang') as Lang) || 'bn')
+  const [lang, setLang] = useState<Lang>(() => (localStorage.getItem('nrams.lang') as Lang) || 'bn')
   const set = (l: Lang) => {
     setLang(l)
-    try { localStorage.setItem('nradtp.lang', l) } catch {}
+    try { localStorage.setItem('nrams.lang', l) } catch {}
   }
   const t = (k: TKey) => dict[k][lang === 'bn' ? 0 : 1]
   const L = (bn: string, en: string) => (lang === 'bn' ? bn : en)

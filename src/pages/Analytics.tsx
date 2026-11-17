@@ -85,7 +85,7 @@ export default function Analytics() {
           </ul>
         </Card>
         <Card padded={false} className="flex flex-col">
-          <div className="px-5 py-3 bg-[#0a1530] rounded-t-xl text-white flex items-center gap-2"><span className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 grid place-items-center"><Bot size={16} /></span><div><div className="text-sm font-semibold">NRADTP {L('সহকারী', 'Assistant')}</div><div className="text-[10px] text-slate-400 bn">{L('শুধু প্রশাসনিক তথ্য ও নেভিগেশন', 'Administrative data & navigation only')}</div></div></div>
+          <div className="px-5 py-3 bg-[#0a1530] rounded-t-xl text-white flex items-center gap-2"><span className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 grid place-items-center"><Bot size={16} /></span><div><div className="text-sm font-semibold">NRAMS {L('সহকারী', 'Assistant')}</div><div className="text-[10px] text-slate-400 bn">{L('শুধু প্রশাসনিক তথ্য ও নেভিগেশন', 'Administrative data & navigation only')}</div></div></div>
           <div className="flex-1 bg-slate-50 p-4 space-y-3 min-h-[220px] max-h-[300px] overflow-y-auto">
             {msgs.map((m, i) => <div key={i} className={`max-w-[85%] rounded-xl px-3 py-2 text-sm bn ${m.me ? 'ml-auto bg-brand-500 text-white' : 'bg-white border border-slate-200 text-slate-700'}`}>{m.text}</div>)}
           </div>
