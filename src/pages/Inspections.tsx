@@ -88,7 +88,7 @@ export default function Inspections() {
             <div className="rounded-[28px] bg-cream overflow-hidden h-[560px] flex flex-col">
               <div className="bg-[#0a1530] text-white px-5 pt-3 pb-3">
                 <div className="flex justify-between text-[10px] text-slate-300 mb-2"><span>09:41</span><span className="flex gap-1 items-center"><Wifi size={10} /><Battery size={10} /></span></div>
-                <div className="text-xs text-brand-300 font-semibold">NRADTP Field</div>
+                <div className="text-xs text-brand-300 font-semibold">NRAMS Field</div>
                 <div className="font-bold text-sm bn">{L('পরিদর্শন', 'Inspection')} · {['Check-in', L('চেকলিস্ট', 'Checklist'), L('ছবি ও ফাইন্ডিংস', 'Photos & findings'), L('জমা', 'Submit')][appStep]}</div>
                 <div className="flex gap-1 mt-2">{[0, 1, 2, 3].map((i) => <span key={i} className={`h-1 flex-1 rounded-full ${i <= appStep ? 'bg-brand-400' : 'bg-white/20'}`} />)}</div>
               </div>

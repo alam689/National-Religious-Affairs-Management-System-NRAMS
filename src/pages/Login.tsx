@@ -40,14 +40,14 @@ export default function Login() {
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-400 to-brand-700 grid place-items-center"><Database size={20} /></div>
             <div>
-              <div className="font-bold text-lg tracking-tight">NRA<span className="text-brand-300">DTP</span></div>
+              <div className="font-bold text-lg tracking-tight">NRA<span className="text-brand-300">MS</span></div>
               <div className="text-[11px] text-slate-400 bn">{t('ministry')}</div>
             </div>
           </div>
           <LangToggle dark />
         </div>
         <div className="relative mt-12 lg:mt-20 max-w-lg">
-          <div className="kicker !text-brand-300 mb-3">{L('জাতীয় ডিজিটাল রূপান্তর প্ল্যাটফর্ম', 'National Digital Transformation Platform')}</div>
+          <div className="kicker !text-brand-300 mb-3">{L('জাতীয় ধর্ম বিষয়ক ব্যবস্থাপনা সিস্টেম', 'National Religious Affairs Management System')}</div>
           <h1 className="text-[34px] leading-[1.15] font-bold tracking-tight bn">
             {L('ধর্মীয় প্রতিষ্ঠান, হজ, ওয়াক্‌ফ ও কল্যাণ সেবা — একটি সমন্বিত প্ল্যাটফর্মে', 'Institutions, Hajj, Waqf and welfare services — on one integrated platform')}
           </h1>

@@ -51,7 +51,7 @@ export function Logo({ compact = false }: { compact?: boolean }) {
       </div>
       {!compact && (
         <div className="leading-tight">
-          <div className="font-bold text-[15px] text-white tracking-tight">NRA<span className="text-brand-300">DTP</span></div>
+          <div className="font-bold text-[15px] text-white tracking-tight">NRA<span className="text-brand-300">MS</span></div>
           <div className="text-[10.5px] text-slate-400 bn truncate max-w-[180px]">{t('ministry')}</div>
         </div>
       )}
