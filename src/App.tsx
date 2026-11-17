@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { isSignedIn } from './auth'
 import Shell from './components/Shell'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
@@ -24,7 +25,10 @@ import Analytics from './pages/Analytics'
 import Roadmap from './pages/Roadmap'
 import CitizenPortal from './pages/CitizenPortal'
 
+// Officer pages sit behind the login screen; the page asked for is remembered and reopened after sign-in
 function Office({ children }: { children: React.ReactNode }) {
+  const loc = useLocation()
+  if (!isSignedIn()) return <Navigate to="/login" replace state={{ from: loc.pathname + loc.search }} />
   return <Shell>{children}</Shell>
 }
 

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Leaflet from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import { Layers, Landmark, Building2, Crosshair, ChevronDown, ChevronLeft } from 'lucide-react'
+import { Layers, Landmark, Building2, Crosshair, ChevronDown, ChevronLeft, Maximize2, Minimize2, X } from 'lucide-react'
 import { useLang, fmtNum } from '../i18n'
 import { PageHeader, Card, CardHeader, Badge, KV } from '../components/ui'
 import { institutions, divisions, waqfProperties, nationalInstitutionStats, type InstType, type Institution } from '../data/mock'
@@ -46,6 +46,9 @@ export default function GisMap() {
   const [geo, setGeo] = useState<BdGeo | null>(null)
   const [geoError, setGeoError] = useState(false)
 
+  const [full, setFull] = useState(false)
+
+  const shellRef = useRef<HTMLDivElement>(null)
   const elRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<Leaflet.Map | null>(null)
   const firstView = useRef(true)
@@ -171,6 +174,34 @@ export default function GisMap() {
     firstView.current = false
   }, [geo, divSel, distSel])
 
+  // Fullscreen: the browser Fullscreen API where it is allowed, otherwise the card simply covers the window
+  const toggleFull = () => {
+    const el = shellRef.current
+    if (!el) return
+    if (document.fullscreenElement) { void document.exitFullscreen(); return }
+    if (full) { setFull(false); return }
+    if (el.requestFullscreen) el.requestFullscreen().catch(() => setFull(true))
+    else setFull(true)
+  }
+  useEffect(() => {
+    const sync = () => setFull(document.fullscreenElement === shellRef.current)
+    document.addEventListener('fullscreenchange', sync)
+    return () => document.removeEventListener('fullscreenchange', sync)
+  }, [])
+  // Re-frame the selected area as soon as the map changes size for full screen
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+    map.invalidateSize()
+    map.fitBounds(viewRef.current, { ...fitOpts(map), animate: false })
+  }, [full])
+  useEffect(() => {
+    if (!full) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && !document.fullscreenElement) setFull(false) }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [full])
+
   const areaTitle = selDist ? `${L(selDist.bn, selDist.en)} ${t('district')}` : selDiv ? `${L(selDiv.bn, selDiv.en)} ${t('division')}` : L('সারা দেশ', 'National')
 
   return (
@@ -179,7 +210,7 @@ export default function GisMap() {
         subtitle={L('জাতীয় মানচিত্রে প্রতিষ্ঠান ও ওয়াক্‌ফ সম্পত্তি — বিভাগ / জেলা নির্বাচন করে count ও profile দেখুন', 'Institutions and waqf assets on a national map — select a division / district to see counts and profiles')} />
 
       <div className="grid lg:grid-cols-[1fr_320px] gap-4">
-        <Card padded={false} className="relative overflow-hidden">
+        <div ref={shellRef} className={`card overflow-hidden bg-white ${full ? 'fixed inset-0 z-[100] rounded-none border-0' : 'relative'}`}>
           <div className="absolute top-3 left-3 z-10 card p-2.5 w-52 shadow-pop">
             <button type="button" onClick={() => setPanelOpen((o) => !o)} className="w-full text-[10.5px] uppercase tracking-wide font-semibold text-slate-400 flex items-center gap-1 px-1">
               <Layers size={11} /> <span className="flex-1 text-left">{L('লেয়ার', 'Layers')}</span><ChevronDown size={13} className={`transition-transform ${panelOpen ? 'rotate-180' : ''}`} />
@@ -211,17 +242,38 @@ export default function GisMap() {
             )}
           </div>
 
-          {divSel && (
-            <div className="absolute top-3 right-3 z-10 flex flex-col items-end gap-1.5">
-              <button onClick={() => selectArea(null)} className="btn-secondary !py-1 text-xs shadow-pop"><Crosshair size={12} /> {L('সারা দেশ', 'Whole country')}</button>
-              {selDist && selDiv && <button onClick={() => selectArea(selDiv.id)} className="btn-secondary !py-1 text-xs shadow-pop bn"><ChevronLeft size={12} /> {L(selDiv.bn, selDiv.en)} {t('division')}</button>}
+          <div className="absolute top-3 right-3 z-10 flex flex-col items-end gap-1.5">
+            <div className="flex items-center gap-1.5">
+              {divSel && <button type="button" onClick={() => selectArea(null)} className="btn-secondary !py-1 text-xs shadow-pop bn"><Crosshair size={12} /> {L('সারা দেশ', 'Whole country')}</button>}
+              <button type="button" onClick={toggleFull} aria-pressed={full} title={full ? L('পূর্ণ পর্দা থেকে বের হোন (Esc)', 'Exit full screen (Esc)') : L('পূর্ণ পর্দায় দেখুন', 'View full screen')}
+                className="btn-secondary !py-1 !px-2.5 text-xs shadow-pop bn">
+                {full ? <Minimize2 size={13} /> : <Maximize2 size={13} />}<span className="hidden sm:inline">{full ? L('বের হোন', 'Exit') : L('পূর্ণ পর্দা', 'Full screen')}</span>
+              </button>
+            </div>
+            {selDist && selDiv && <button type="button" onClick={() => selectArea(selDiv.id)} className="btn-secondary !py-1 text-xs shadow-pop bn"><ChevronLeft size={12} /> {L(selDiv.bn, selDiv.en)} {t('division')}</button>}
+          </div>
+
+          <div ref={elRef} className={`gis-map w-full ${full ? 'h-full' : 'h-[520px] sm:h-[640px]'}`} role="application" aria-label={L('বাংলাদেশের মানচিত্র', 'Map of Bangladesh')} />
+
+          {/* In full screen the side panel is out of view, so the area summary and the pinned institution ride on the map */}
+          {full && (
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10 hidden md:flex items-center gap-2 card shadow-pop px-3.5 py-1.5 text-xs bn whitespace-nowrap">
+              <span className="font-semibold text-slate-900">{areaTitle}</span>
+              <span className="text-slate-300">·</span>
+              <span className="text-slate-500">{fmtNum(scoped.length, lang)} {L('টি নমুনা প্রতিষ্ঠান', 'sample institutions')}</span>
+            </div>
+          )}
+          {full && pin && (
+            <div className="absolute bottom-12 left-3 z-10 card shadow-pop p-3.5 w-72 max-w-[calc(100%-1.5rem)]">
+              <button type="button" onClick={() => setPin(null)} aria-label={L('বন্ধ করুন', 'Close')} className="absolute top-2 right-2 p-1 rounded text-slate-400 hover:text-slate-700 hover:bg-slate-100"><X size={14} /></button>
+              <div className="flex items-center gap-2 mb-2 pr-6"><span className="text-2xl">{typeMeta[pin.type].emoji}</span><div className="min-w-0"><div className="font-semibold text-sm bn truncate">{L(pin.nameBn, pin.nameEn)}</div><div className="mono-id">{pin.id}</div></div></div>
+              <KV k={t('type')} v={t(pin.type)} /><KV k={t('district')} v={L(pin.district.bn, pin.district.en)} /><KV k={t('status')} v={<Badge>{pin.status}</Badge>} />
+              <button type="button" className="btn-primary w-full mt-3 text-xs" onClick={() => nav(`/institutions/${pin.id}`)}><Building2 size={13} /> {L('প্রোফাইল খুলুন', 'Open profile')}</button>
             </div>
           )}
 
-          <div ref={elRef} className="gis-map w-full h-[520px] sm:h-[640px]" role="application" aria-label={L('বাংলাদেশের মানচিত্র', 'Map of Bangladesh')} />
-
           {geoError && <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5 bn">{L('সীমানা ডেটা লোড করা যায়নি', 'Boundary data could not be loaded')}</div>}
-        </Card>
+        </div>
 
         <div className="space-y-4">
           <Card>

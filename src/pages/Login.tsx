@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
+import { signIn } from '../auth'
 import { ArrowRight, Check, Database, Building2, Plane, Landmark, HandCoins, ClipboardCheck, Users, Map, Globe } from 'lucide-react'
 import { useLang } from '../i18n'
 import { LangToggle } from '../components/Shell'
@@ -13,19 +14,21 @@ const workspaces = [
   { id: 'field', bn: 'জেলা/উপজেলা কার্যালয়', en: 'District / Upazila Office' },
 ]
 
+// Feature cards placed on a ring around the central database; x / y are the card centre in % of the stage
 const chips = [
-  { icon: Building2, bn: 'ধর্মীয় প্রতিষ্ঠান', en: 'Institutions', x: 6, y: 18 },
-  { icon: HandCoins, bn: 'অনুদান', en: 'Grants', x: 58, y: 12 },
-  { icon: Plane, bn: 'হজ', en: 'Hajj', x: 72, y: 34 },
-  { icon: Landmark, bn: 'ওয়াক্‌ফ', en: 'Waqf', x: 10, y: 50 },
-  { icon: ClipboardCheck, bn: 'পরিদর্শন', en: 'Inspection', x: 66, y: 62 },
-  { icon: Users, bn: 'জনবল', en: 'Personnel', x: 14, y: 78 },
-  { icon: Map, bn: 'GIS', en: 'GIS', x: 62, y: 84 },
+  { icon: HandCoins, bn: 'অনুদান', en: 'Grants', subBn: '৭-ধাপের অনুমোদন', subEn: '7-stage workflow', tone: 'from-amber-300 to-orange-500', x: 50, y: 9 },
+  { icon: Plane, bn: 'হজ', en: 'Hajj', subBn: 'হজযাত্রী ও ফ্লাইট', subEn: 'Pilgrims & flights', tone: 'from-emerald-300 to-teal-600', x: 78, y: 25 },
+  { icon: ClipboardCheck, bn: 'পরিদর্শন', en: 'Inspection', subBn: 'মাঠ পর্যায়ের অ্যাপ', subEn: 'Field officer app', tone: 'from-sky-300 to-cyan-600', x: 84, y: 58 },
+  { icon: Map, bn: 'GIS', en: 'GIS', subBn: '৬৪ জেলার মানচিত্র', subEn: '64-district map', tone: 'from-rose-300 to-pink-600', x: 67, y: 88 },
+  { icon: Users, bn: 'জনবল', en: 'Personnel', subBn: 'ধর্মীয় নেতা ও কর্মী', subEn: 'Clergy & staff', tone: 'from-fuchsia-300 to-purple-600', x: 33, y: 88 },
+  { icon: Landmark, bn: 'ওয়াক্‌ফ', en: 'Waqf', subBn: 'সম্পত্তি ও ইজারা', subEn: 'Estates & leases', tone: 'from-violet-300 to-indigo-600', x: 16, y: 58 },
+  { icon: Building2, bn: 'ধর্মীয় প্রতিষ্ঠান', en: 'Institutions', subBn: 'নিবন্ধন ও প্রোফাইল', subEn: 'Registry & profiles', tone: 'from-brand-300 to-brand-600', x: 22, y: 25 },
 ]
 
 export default function Login() {
   const { L, t } = useLang()
   const nav = useNavigate()
+  const from = (useLocation().state as { from?: string } | null)?.from
   const [ws, setWs] = useState('hq')
   const [email, setEmail] = useState('rezaul.karim')
   const [pw, setPw] = useState('••••••••')
@@ -56,22 +59,41 @@ export default function Login() {
           </p>
         </div>
         {/* Floating chips converging to DB */}
-        <div className="relative flex-1 mt-8 min-h-[280px] hidden md:block">
-          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <div className="relative flex-1 mt-8 min-h-[360px] hidden md:block">
+          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              {chips.map((c, i) => (
+                <linearGradient key={i} id={`spoke-${i}`} gradientUnits="userSpaceOnUse" x1={c.x} y1={c.y} x2={50} y2={50}>
+                  <stop offset="0" stopColor="#7ea6f0" stopOpacity=".12" /><stop offset="1" stopColor="#adc7f7" stopOpacity=".75" />
+                </linearGradient>
+              ))}
+            </defs>
+            <ellipse cx="50" cy="50" rx="34" ry="40" fill="none" stroke="rgba(173,199,247,.10)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+            <ellipse cx="50" cy="50" rx="17" ry="20" fill="none" stroke="rgba(173,199,247,.08)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
             {chips.map((c, i) => (
-              <line key={i} x1={c.x + 10} y1={c.y + 4} x2={50} y2={50} stroke="rgba(126,166,240,.35)" strokeWidth=".3" strokeDasharray="1.5 1.5" className="animate-dash" style={{ animationDelay: `${i * 0.3}s` }} />
+              <line key={i} x1={c.x} y1={c.y} x2={50} y2={50} stroke={`url(#spoke-${i})`} strokeWidth="1.4" strokeLinecap="round" strokeDasharray="4 6" vectorEffect="non-scaling-stroke" className="animate-dash" style={{ animationDelay: `${i * -0.3}s` }} />
             ))}
           </svg>
           {chips.map((c, i) => (
-            <div key={i} className="absolute flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[.06] border border-white/10 backdrop-blur text-xs font-semibold animate-float bn" style={{ left: `${c.x}%`, top: `${c.y}%`, animationDelay: `${i * 0.6}s` }}>
-              <c.icon size={13} className="text-brand-300" />{L(c.bn, c.en)}
+            <div key={i} className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: `${c.x}%`, top: `${c.y}%` }}>
+              <div className="animate-float" style={{ animationDelay: `${i * -0.7}s` }}>
+                <div className="feature-chip">
+                  <span className={`feature-chip-icon bg-gradient-to-br ${c.tone}`}><c.icon size={17} strokeWidth={2.2} /></span>
+                  <span className="leading-tight bn whitespace-nowrap">
+                    <span className="block text-[13px] font-semibold text-white">{L(c.bn, c.en)}</span>
+                    <span className="block text-[10.5px] text-brand-200/80 mt-0.5">{L(c.subBn, c.subEn)}</span>
+                  </span>
+                </div>
+              </div>
             </div>
           ))}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 grid place-items-center shadow-pop">
-              <span className="absolute inset-0 rounded-2xl border-2 border-brand-300 animate-pulseRing" />
-              <Database size={26} />
+            <div className="relative w-20 h-20 rounded-3xl bg-gradient-to-br from-brand-400 via-brand-500 to-brand-700 grid place-items-center ring-1 ring-white/30 shadow-[0_0_70px_rgba(47,98,217,.7)]">
+              <span className="absolute inset-0 rounded-3xl border-2 border-brand-300 animate-pulseRing" />
+              <span className="absolute inset-0 rounded-3xl border border-brand-200 animate-pulseRing" style={{ animationDelay: '1.2s' }} />
+              <Database size={30} />
             </div>
+            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 whitespace-nowrap text-[10px] font-semibold uppercase tracking-[.18em] text-brand-200/80 bn">{L('একক জাতীয় ডেটাবেস', 'One national database')}</div>
           </div>
         </div>
         <div className="relative text-[11px] text-slate-500 bn mt-6">{t('govt')} · {L('সকল তথ্য সরকারি তথ্য সুরক্ষা নীতিমালা অনুসারে সংরক্ষিত', 'All data is protected under Government data security policy')}</div>
@@ -96,7 +118,7 @@ export default function Login() {
           <div className="card p-5 animate-fadeUp" style={{ animationDelay: '.1s' }}>
             <div className="kicker mb-1">{L('ধাপ ০২', 'Step 02')}</div>
             <h2 className="font-semibold text-slate-900 mb-3 bn">{t('officerLogin')}</h2>
-            <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); nav('/') }}>
+            <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); signIn(); nav(from ?? '/', { replace: true }) }}>
               <div>
                 <label className="label bn">{L('অফিসিয়াল ই-মেইল', 'Official e-mail')}</label>
                 <div className="flex">

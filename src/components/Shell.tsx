@@ -5,6 +5,7 @@ import {
   BookOpen, UserSquare2, Fingerprint, CalendarDays, Gift, Sparkles, Route, Search, Bell, Globe, LogOut, Menu, X, ChevronDown, Database, type LucideIcon,
 } from 'lucide-react'
 import { useLang, type TKey } from '../i18n'
+import { signOut } from '../auth'
 
 type Item = { to: string; k: TKey; icon: LucideIcon; phase: 1 | 2 | 3 }
 type Group = { k: TKey; items: Item[] }
@@ -136,7 +137,7 @@ function Topbar({ onMenu }: { onMenu: () => void }) {
             </div>
           )}
         </div>
-        <button className="flex items-center gap-2 pl-2 border-l border-slate-200 hover:bg-slate-50 rounded-lg pr-2 py-1" onClick={() => nav('/login')} title={t('logout')}>
+        <button className="flex items-center gap-2 pl-2 border-l border-slate-200 hover:bg-slate-50 rounded-lg pr-2 py-1" onClick={() => { signOut(); nav('/login') }} title={t('logout')}>
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-brand-700 text-white grid place-items-center text-xs font-bold">MR</div>
           <div className="hidden sm:block text-left leading-tight">
             <div className="text-sm font-semibold text-slate-800 bn">{L('মোঃ রেজাউল করিম', 'Md. Rezaul Karim')}</div>
